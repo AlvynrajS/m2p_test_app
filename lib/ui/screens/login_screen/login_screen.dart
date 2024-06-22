@@ -4,6 +4,7 @@ import 'package:test_app/data/string_resource.dart';
 import 'package:test_app/ui/screens/login_screen/lognin_controller.dart';
 import 'package:test_app/utils/extension.dart';
 import 'package:test_app/widgets/custom_button.dart';
+import 'package:test_app/widgets/custom_text_form_filed.dart';
 
 class LoginScreen extends GetWidget<LoginController> {
   const LoginScreen({super.key});
@@ -13,7 +14,7 @@ class LoginScreen extends GetWidget<LoginController> {
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.blue,
-        body: _bodyWiget(),
+        body: _bodyWidget(),
         bottomSheet: BottomSheet(
           onClosing: () {},
           builder: (context) {
@@ -24,7 +25,7 @@ class LoginScreen extends GetWidget<LoginController> {
     );
   }
 
-  Widget _bodyWiget() {
+  Widget _bodyWidget() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
@@ -56,29 +57,16 @@ class LoginScreen extends GetWidget<LoginController> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 1.4,
-              height: 80,
-              child: TextFormField(
-                controller: controller.mobileNoController,
-                keyboardType: TextInputType.phone,
-                validator: controller.validateMobile,
-                maxLength: 10,
-                decoration: InputDecoration(
-                  contentPadding:
-                      const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                  hintText: StringResource.registerMobileNo,
-                  filled: true,
-                  fillColor: Colors.white,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0),
-                      borderSide: const BorderSide(color: Colors.blue)),
-                ),
-              ),
+            CustomTextFormFiled(
+              controller: controller.mobileNoController,
+              validator: controller.validateMobile,
+              maxLength: 10,
+              hintText: StringResource.registerMobileNo,
+              keyboardType: TextInputType.phone,
             ),
             CustomButton(
                 width: MediaQuery.of(context).size.width / 1.2,
-                buttonNmae: StringResource.login,
+                buttonName: StringResource.login,
                 onPressed: () {
                   controller.navigation(context: context);
                 })

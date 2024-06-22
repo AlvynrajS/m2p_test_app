@@ -1,16 +1,14 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:test_app/http/constants.dart';
-import 'package:test_app/http/http_service.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:test_app/http/repo.dart';
 import 'package:test_app/routes/routes.dart';
-import 'package:http/http.dart' as http;
 import 'package:test_app/utils/widget_utils.dart';
 
 class LoginController extends GetxController {
   TextEditingController mobileNoController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  final box = GetStorage();
 
   String? validateMobile(String? value) {
     if (value != null) {
@@ -36,35 +34,19 @@ class LoginController extends GetxController {
       );
     } else {
       // login(context);
+      box.write('mobileNumber', mobileNoController.text);
       Get.toNamed(AppRoutes.otpScreen);
     }
   }
 
-  void login(BuildContext context) async {
-    Map<String, String> requestBody = {'mobileNumber': mobileNoController.text};
-
-    String requestBodyJson = jsonEncode(requestBody);
-
+  Future<void> login(BuildContext context) async {
     try {
-      var response = await http.post(
-        Uri.parse(APIConstants.loginUrl),
-        headers: HttpService.headers,
-        body: requestBodyJson,
-      );
-
-      if (response.statusCode == 200) {
-        var responseData = jsonDecode(response.body);
-
-        WidgetUtils.snackBar(
-            content: "Successfully Logged In", context: context);
-      } else {
-        WidgetUtils.snackBar(
-            content: " Error : ${response.statusCode}", context: context);
+      String id = await Repo.loginCall(context, mobileNoController.text);
+      if (id != "") {
+        box.write("resourceId", id);
       }
     } catch (e) {
       WidgetUtils.snackBar(content: " Error : $e", context: context);
     }
   }
-
-
 }

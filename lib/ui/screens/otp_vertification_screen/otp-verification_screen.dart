@@ -4,6 +4,7 @@ import 'package:test_app/data/string_resource.dart';
 import 'package:test_app/ui/screens/otp_vertification_screen/otp_verification_controller.dart';
 import 'package:test_app/utils/extension.dart';
 import 'package:test_app/widgets/custom_button.dart';
+import 'package:test_app/widgets/custom_text_form_filed.dart';
 
 class OTPVerificationScreen extends GetWidget<OTPVerificationController> {
   const OTPVerificationScreen({super.key});
@@ -82,44 +83,44 @@ class OTPVerificationScreen extends GetWidget<OTPVerificationController> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        controller.loginController.mobileNoController.text,
+                        "+91 ${controller.box.read("mobileNumber")}",
                         style: const TextStyle(
-                          color: Colors.indigo,
+                          color: Colors.black,
+                          fontWeight: FontWeight.w800,
                           fontSize: 16,
                         ),
                       ),
                       const SizedBox(width: 10),
-                      const Text(
-                        StringResource.edit,
-                        style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          decorationColor: Colors.blue,
-                          color: Colors.blue,
+                      GestureDetector(
+                        onTap: () {
+                          Get.back();
+                        },
+                        child: const Text(
+                          StringResource.edit,
+                          style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            decorationColor: Colors.blue,
+                            color: Colors.blue,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(
+                  CustomTextFormFiled(
+                    controller: controller.otpController,
                     width: MediaQuery.of(context).size.width / 2.3,
-                    child: TextFormField(
-                      keyboardType: TextInputType.number,
-                      maxLength: 4,
-                      validator: controller.validateOtp,
-                      decoration: InputDecoration(
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                        hintText: StringResource.otpDigit,
-                        filled: true,
-                        fillColor: Colors.white,
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: const BorderSide(color: Colors.blue)),
-                      ),
-                    ),
+                    maxLength: 4,
+                    validator: controller.validateOtp,
+                    hintText: StringResource.otpDigit,
+                    keyboardType: TextInputType.number,
                   ),
-                  Text(controller.start.toString()),
+                  if (controller.start != 0.obs)
+                    Obx(() {
+                      return Text(
+                          "00:${controller.start.toString().padLeft(2, '0')}");
+                    }),
                   CustomButton(
-                    buttonNmae: StringResource.resendOtp,
+                    buttonName: StringResource.resendOtp,
                     backgroundColor: !timerLive ? Colors.blue : Colors.white,
                     fourgroundColor: !timerLive ? Colors.white : Colors.blue,
                     onPressed: () {
@@ -128,7 +129,7 @@ class OTPVerificationScreen extends GetWidget<OTPVerificationController> {
                     width: MediaQuery.of(context).size.width / 1.5,
                   ),
                   CustomButton(
-                    buttonNmae: StringResource.verifyNo,
+                    buttonName: StringResource.verifyNo,
                     onPressed: () {
                       controller.navigation(context: context, isResend: false);
                     },

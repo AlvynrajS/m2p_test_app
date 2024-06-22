@@ -1,22 +1,24 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:test_app/http/repo.dart';
+import 'package:test_app/models/access_token_model.dart';
 import 'package:test_app/routes/routes.dart';
-import 'package:test_app/ui/screens/login_screen/lognin_controller.dart';
+import 'package:test_app/utils/widget_utils.dart';
 
 class OTPVerificationController extends GetxController {
-  LoginController loginController = Get.find();
-  String mobileNo = "";
   RxInt start = 30.obs;
   RxBool isTimerRunning = false.obs;
   late Timer timer;
   final formKey = GlobalKey<FormState>();
+  final box = GetStorage();
+  final TextEditingController otpController = TextEditingController();
+
 
   @override
   void onInit() {
-    mobileNo = loginController.mobileNoController.text;
     startTimer();
     super.onInit();
   }
@@ -66,8 +68,10 @@ class OTPVerificationController extends GetxController {
 
   void navigation({required BuildContext context, required bool isResend}) {
     if (isResend) {
-      resetTimer();
-      startTimer();
+      if (start.value == 0) {
+        resetTimer();
+        startTimer();
+      }
     } else {
       if (!formKey.currentState!.validate()) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -76,8 +80,31 @@ class OTPVerificationController extends GetxController {
           ),
         );
       } else {
+        //accessTokenCall(context);
         Get.offNamed(AppRoutes.dynamicFormScreen);
       }
+    }
+  }
+
+  Future<void> accessTokenCall(BuildContext context) async {
+    Map<String, dynamic> requestBody = {
+      'client_id': 'community-app',
+      'client_secret': '123',
+      'grant_type': 'mobile_otp',
+      'token': '123455',
+      'username': box.read("mobileNumber"),
+      'otp': otpController.text,
+      'otpreferenceid': '1eca5cad-255a-4777-a198-0e06ec217840',
+    };
+
+    try {
+      AccessTokenModel? token =
+          await Repo.accessTokenCall(context, requestBody);
+      if (token != null) {
+        box.write("token", token);
+      }
+    } catch (e) {
+      WidgetUtils.snackBar(content: " Error : $e", context: context);
     }
   }
 }

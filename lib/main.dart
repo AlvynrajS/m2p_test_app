@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:test_app/data/dependency/injector/injection.dart';
 import 'routes/routes.dart';
 
 void main() async {
   await inject();
+  await GetStorage.init();
   runApp(const MyApp());
 }
 
@@ -21,6 +23,7 @@ class MyApp extends StatelessWidget {
       ),
       initialRoute: AppRoutes.initial,
       getPages: AppRoutes.routes,
+      debugShowCheckedModeBanner: false,
     );
   }
 }

@@ -8,5 +8,5 @@ Future inject() async {
   Get.create(() => SplashController(), permanent: true);
   Get.create(() => LoginController(), permanent: true);
   Get.create(() => OTPVerificationController(), permanent: true);
-  Get.create(() => DynmaicFormController(), permanent: true);
+  Get.create(() => DynamicFormController(), permanent: true);
 }
